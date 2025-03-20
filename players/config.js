@@ -21,7 +21,7 @@ const config = {
     // Physical Information
     physicalInfo: {
         height: "6'3\" (188 cm)",
-        weight: "180 lbs (82 kg)",
+        weight: "190 lbs (82 kg)",
         age: "25",
         position: "Forward"
     },
