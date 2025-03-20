@@ -11,21 +11,18 @@ const config = {
             address: "123 Sports Ave, Champion City"
         }
     },
-
     // Site Branding
     branding: {
         name: "Sport<span>Scout</span>",
         instagram: "https://www.instagram.com/portflyo/"
     },
-
     // Physical Information
     physicalInfo: {
-        height: "6'3\" (188 cm)",
-        weight: "190 lbs (82 kg)",
+        height: "6'3\" (190 cm)",
+        weight: "190 lbs (86 kg)",
         age: "25",
         position: "Forward"
     },
-
     // Statistics
     stats: {
         matchesPlayed: "150+",
@@ -33,7 +30,6 @@ const config = {
         trainingSessions: "100+",
         yearsExperience: "10+"
     },
-
     // Career Timeline
     timeline: [
         {
@@ -52,7 +48,6 @@ const config = {
             description: "Gained international recognition after winning a global championship."
         }
     ],
-
     // Images
     images: {
         hero: "https://e0.365dm.com/21/10/1600x900/skysports-mohamed-mo-salah_5555663.jpg?20211022175542",
@@ -75,7 +70,6 @@ const config = {
             }
         ]
     },
-
     // Testimonials
     testimonials: [
         {
@@ -83,14 +77,12 @@ const config = {
             author: "Coach Smith"
         }
     ],
-
     // Social Media Links
     socialMedia: {
         facebook: "#",
         instagram: "https://www.instagram.com/portflyo/",
         twitter: "#"
     },
-
     // Theme Colors (CSS Variables)
     theme: {
         primary: "#ff3a3a",
@@ -102,4 +94,4 @@ const config = {
 };
 
 // Export the configuration
-export default config; 
+export default config;
