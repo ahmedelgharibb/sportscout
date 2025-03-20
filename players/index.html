@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Player Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Config Script -->
+    <script type="module">
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        const configUrl = `./config.js?t=${timestamp}`;
+        
+        console.log('Loading config from:', configUrl);
+        
+        // Function to reload the page
+        const reloadPage = () => {
+            console.log('Reloading page...');
+            window.location.reload();
+        };
+
+        // Function to apply config to DOM
+        const applyConfig = (config) => {
+            console.log('Applying config:', config);
+            try {
+                // Update theme colors
+                const root = document.documentElement;
+                Object.entries(config.theme).forEach(([key, value]) => {
+                    root.style.setProperty(`--${key}`, value);
+                });
+
+                // Update branding
+                const brandName = document.getElementById('brandName');
+                if (brandName) {
+                    brandName.innerHTML = config.branding.name;
+                    console.log('Updated brand name:', config.branding.name);
+                }
+                
+                const heroHighlight = document.querySelector('.hero h1 .highlight');
+                if (heroHighlight) {
+                    heroHighlight.textContent = config.branding.name.replace(/<\/?span>/g, '');
+                    console.log('Updated hero highlight');
+                }
+
+                // Update personal information
+                const aboutContent = document.querySelector('.about-content');
+                if (aboutContent) {
+                    const nameElement = aboutContent.querySelector('h3');
+                    const titleElement = aboutContent.querySelector('p:first-of-type');
+                    const bioElement = aboutContent.querySelector('p:last-of-type');
+                    
+                    if (nameElement) {
+                        nameElement.textContent = config.personalInfo.name;
+                        console.log('Updated name:', config.personalInfo.name);
+                    }
+                    if (titleElement) {
+                        titleElement.textContent = config.personalInfo.title;
+                        console.log('Updated title:', config.personalInfo.title);
+                    }
+                    if (bioElement) {
+                        bioElement.textContent = config.personalInfo.bio;
+                        console.log('Updated bio');
+                    }
+                }
+
+                // Update contact information
+                const contactMethods = document.querySelectorAll('.contact-method');
+                if (contactMethods.length >= 3) {
+                    contactMethods[0].querySelector('p').textContent = config.personalInfo.contact.phone;
+                    contactMethods[1].querySelector('p').textContent = config.personalInfo.contact.email;
+                    contactMethods[2].querySelector('p').textContent = config.personalInfo.contact.address;
+                    console.log('Updated contact information');
+                }
+
+                // Update statistics
+                const statValues = document.querySelectorAll('.stat-value');
+                if (statValues.length >= 4) {
+                    statValues[0].textContent = config.stats.matchesPlayed;
+                    statValues[1].textContent = config.stats.tournamentsWon;
+                    statValues[2].textContent = config.stats.trainingSessions;
+                    statValues[3].textContent = config.stats.yearsExperience;
+                    console.log('Updated statistics');
+                }
+
+                // Update physical information
+                const infoValues = document.querySelectorAll('.info-value');
+                if (infoValues.length >= 4) {
+                    infoValues[0].textContent = config.physicalInfo.height;
+                    infoValues[1].textContent = config.physicalInfo.age;
+                    infoValues[2].textContent = config.physicalInfo.weight;
+                    infoValues[3].textContent = config.physicalInfo.position;
+                    console.log('Updated physical information');
+                }
+
+                // Update images
+                const heroImage = document.querySelector('.hero-player img');
+                const aboutImage = document.querySelector('.about-image img');
+                if (heroImage) {
+                    heroImage.src = config.images.hero;
+                    console.log('Updated hero image');
+                }
+                if (aboutImage) {
+                    aboutImage.src = config.images.about;
+                    console.log('Updated about image');
+                }
+
+                // Update gallery
+                const galleryItems = document.querySelectorAll('.gallery-item');
+                config.images.gallery.forEach((item, index) => {
+                    if (galleryItems[index]) {
+                        const img = galleryItems[index].querySelector('img');
+                        const title = galleryItems[index].querySelector('.gallery-title');
+                        const subtitle = galleryItems[index].querySelector('.gallery-subtitle');
+                        
+                        if (img) img.src = item.image;
+                        if (title) title.textContent = item.title;
+                        if (subtitle) subtitle.textContent = item.subtitle;
+                    }
+                });
+                console.log('Updated gallery');
+
+                // Update timeline
+                const timelineContainer = document.querySelector('.timeline');
+                if (timelineContainer) {
+                    timelineContainer.innerHTML = config.timeline.map(item => `
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <span class="timeline-year">${item.year}</span>
+                                <h3>${item.title}</h3>
+                                <p>${item.description}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                    console.log('Updated timeline');
+                }
+
+                // Update testimonials
+                const testimonialContainer = document.querySelector('.testimonial-item');
+                if (testimonialContainer && config.testimonials.length > 0) {
+                    const testimonial = config.testimonials[0];
+                    testimonialContainer.innerHTML = `
+                        <p class="testimonial-text">${testimonial.text}</p>
+                        <p class="testimonial-author">- ${testimonial.author}</p>
+                    `;
+                    console.log('Updated testimonials');
+                }
+
+                // Update social media links
+                const socialLinks = document.querySelectorAll('.social-icon');
+                if (socialLinks.length >= 3) {
+                    socialLinks[0].href = config.socialMedia.facebook;
+                    socialLinks[1].href = config.socialMedia.instagram;
+                    socialLinks[2].href = config.socialMedia.twitter;
+                    console.log('Updated social media links');
+                }
+
+                console.log('Config applied successfully');
+            } catch (error) {
+                console.error('Error applying config:', error);
+            }
+        };
+
+        // Function to check for config changes
+        const checkForChanges = async () => {
+            try {
+                console.log('Checking for config changes...');
+                const response = await fetch(configUrl);
+                const text = await response.text();
+                
+                // Create a temporary script element to evaluate the config
+                const script = document.createElement('script');
+                script.type = 'module';
+                script.textContent = text;
+                
+                // Create a promise to handle script loading
+                const loadPromise = new Promise((resolve, reject) => {
+                    script.onload = resolve;
+                    script.onerror = reject;
+                });
+                
+                document.body.appendChild(script);
+                await loadPromise;
+                
+                // Compare the new config with the current one
+                if (window.tempConfig && JSON.stringify(window.playerConfig) !== JSON.stringify(window.tempConfig)) {
+                    console.log('Config changes detected, reloading...');
+                    reloadPage();
+                }
+                
+                document.body.removeChild(script);
+            } catch (error) {
+                console.error('Error checking for changes:', error);
+            }
+        };
+
+        // Load config with retry mechanism
+        const loadConfig = async (retries = 3) => {
+            try {
+                console.log('Loading config...');
+                const config = await import(configUrl);
+                window.playerConfig = config;
+                window.tempConfig = config;
+                console.log('Config loaded successfully:', config);
+
+                // Apply configuration when DOM is loaded
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        console.log('DOM loaded, applying config...');
+                        applyConfig(config);
+                        // Start checking for changes every 5 seconds
+                        setInterval(checkForChanges, 5000);
+                    });
+                } else {
+                    console.log('DOM already loaded, applying config immediately...');
+                    applyConfig(config);
+                    // Start checking for changes every 5 seconds
+                    setInterval(checkForChanges, 5000);
+                }
+            } catch (error) {
+                console.error('Error loading config:', error);
+                if (retries > 0) {
+                    console.log(`Retrying config load... (${retries} attempts left)`);
+                    setTimeout(() => loadConfig(retries - 1), 1000);
+                }
+            }
+        };
+
+        // Start loading the config
+        loadConfig();
+    </script>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo" id="brandName">Sports<span>Scout</span></a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#stats">Stats</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#timeline">Timeline</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-btn">&#9776;</button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <ul class="mobile-nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#stats">Stats</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+            <li><a href="#timeline">Timeline</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1><span class="highlight">jj</span></h1>
+            <p>Your ultimate destination for sports excellence. Explore my journey, achievements, and training routines.</p>
+            <div class="cta-buttons">
+                <a href="#about" class="cta-btn">Explore More</a>
+                <a href="#contact" class="cta-btn outline">Contact Me</a>
+            </div>
+        </div>
+        <div class="hero-player">
+            <img src="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=2069&auto=format&fit=crop" alt="Player Image">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-grid">
+                <div class="about-image">
+                    <img src="https://media.istockphoto.com/id/1368151370/photo/portrait-of-happy-male-soccer-player.jpg?s=612x612&w=0&k=20&c=4yJHKcKeR7uGgBeBrF1WlGBpX4pXP7znzm0xkr5J-Yk=" alt="About Image">
+                </div>
+                <div class="about-content">
+                    <h3>John Doe</h3>
+                    <p>Professional Athlete | Champion | Motivational Speaker</p>
+                    <p>With over 10 years of experience in the sports industry, I have achieved numerous accolades and continue to push the boundaries of excellence. My journey is a testament to hard work, dedication, and passion.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="stats-section">
+        <div class="container">
+            <h2 class="section-title">My Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value">150+</span>
+                    <span class="stat-label">Matches Played</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">50+</span>
+                    <span class="stat-label">Tournaments Won</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">100+</span>
+                    <span class="stat-label">Training Sessions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">10+</span>
+                    <span class="stat-label">Years of Experience</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Informations Section -->
+    <section id="informations" class="informations-section">
+        <div class="container">
+            <h2 class="section-title">Informations</h2>
+            <div class="informations-grid">
+                <div class="info-card">
+                    <span class="info-label">Height</span>
+                    <span class="info-value">6'2" (188 cm)</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">Age</span>
+                    <span class="info-value">25</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">Weight</span>
+                    <span class="info-value">180 lbs (82 kg)</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">Position</span>
+                    <span class="info-value">Forward</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="achievements-section">
+        <div class="container">
+            <h2 class="section-title">Achievements</h2>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏆</div>
+                    <h3 class="achievement-title">Championship Title</h3>
+                    <p class="achievement-description">Won the National Championship in 2022</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🥇</div>
+                    <h3 class="achievement-title">MVP Award</h3>
+                    <p class="achievement-description">Most Valuable Player 2021 Season</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🌟</div>
+                    <h3 class="achievement-title">All-Star Selection</h3>
+                    <p class="achievement-description">Selected for All-Star Team 3 consecutive years</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">📈</div>
+                    <h3 class="achievement-title">Record Holder</h3>
+                    <p class="achievement-description">Set new league record for most points in a season</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline" class="timeline-section">
+        <div class="container">
+            <h2 class="section-title">My Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2010</span>
+                        <h3>Started Professional Career</h3>
+                        <p>Began my journey as a professional athlete, competing in local tournaments.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2015</span>
+                        <h3>First Major Win</h3>
+                        <p>Won my first major tournament, marking a turning point in my career.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="timeline-year">2020</span>
+                        <h3>International Recognition</h3>
+                        <p>Gained international recognition after winning a global championship.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">Testimonials</h2>
+            <div class="testimonial-slider">
+                <div class="testimonial-item">
+                    <p class="testimonial-text">John is one of the most dedicated athletes I have ever worked with. His commitment to excellence is unparalleled.</p>
+                    <p class="testimonial-author">- Coach Smith</p>
+                </div>
+            </div>
+            <div class="sponsors-grid">
+                <div class="sponsor-item">
+                    <img src="https://via.placeholder.com/150x60" alt="Sponsor 1">
+                </div>
+                <div class="sponsor-item">
+                    <img src="https://via.placeholder.com/150x60" alt="Sponsor 2">
+                </div>
+                <div class="sponsor-item">
+                    <img src="https://via.placeholder.com/150x60" alt="Sponsor 3">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Contact Me</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-method">
+                        <i class="fas fa-phone"></i>
+                        <p>+1 234 567 890</p>
+                    </div>
+                    <div class="contact-method">
+                        <i class="fas fa-envelope"></i>
+                        <p>john.doe@sportscout.com</p>
+                    </div>
+                    <div class="contact-method">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>123 Sports Ave, Champion City</p>
+                    </div>
+                </div>
+                <form id="contactForm" class="contact-form" onsubmit="sendEmail(event)">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3 class="footer-title">SportsPro</h3>
+                    <p>Your ultimate destination for sports excellence.</p>
+                </div>
+                <div>
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#hero">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#stats">Stats</a></li>
+                        <li><a href="#achievements">Achievements</a></li>
+                        <li><a href="#timeline">Timeline</a></li>
+                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">Follow Me</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">&#xf09a;</a>
+                        <a href="#" class="social-icon">&#xf16d;</a>
+                        <a href="#" class="social-icon">&#xf099;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 SportsPro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function sendEmail(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message')
+            };
+
+            // Get the owner's email from config
+            const ownerEmail = window.playerConfig.personalInfo.contact.email;
+            
+            // Create mailto link with form data
+            const subject = `Contact from ${data.name} via SportsScout`;
+            const body = `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`;
+            const mailtoLink = `mailto:${ownerEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Open default email client
+            window.location.href = mailtoLink;
+            
+            // Clear form
+            form.reset();
+            alert('Thank you for your message! Your default email client will open to send the email.');
+        }
+    </script>
+</body>
+</html>
