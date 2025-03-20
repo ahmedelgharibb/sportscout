@@ -101,5 +101,5 @@ const config = {
     }
 };
 
-// Export the config object
+// Export the configuration
 export default config; 
